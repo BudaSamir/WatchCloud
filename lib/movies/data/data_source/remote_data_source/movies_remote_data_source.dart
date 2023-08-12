@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:watch_cloud/core/error/exception.dart';
 import 'package:watch_cloud/core/network/api_constants.dart';
 import 'package:watch_cloud/core/network/error_message_model.dart';
+import 'package:watch_cloud/movies/data/models/cast_model.dart';
+import 'package:watch_cloud/movies/data/models/genres_home_page_model.dart';
 import 'package:watch_cloud/movies/data/models/movie_details_model.dart';
 import 'package:watch_cloud/movies/data/models/movies_model.dart';
 import 'package:watch_cloud/movies/data/models/recommendation_model.dart';
@@ -17,6 +19,9 @@ abstract class BaseMovieRemoteDataSource {
   Future<MovieDetails> getMovieDetails(MovieDetailsParameters parameters);
   Future<List<RecommendationModel>> getRecommendation(
       RecommendationParameters parameters);
+  Future<List<MoviesModel>> getDiscaverMovie(DiscaverPrameters prameters);
+  Future<List<CastModel>> getCast(CastPrameters prameters);
+  Future<List<GenresHomePageModel>> getGenresHomePage();
 }
 
 class MovieRemoteDataSource implements BaseMovieRemoteDataSource {
@@ -94,6 +99,49 @@ class MovieRemoteDataSource implements BaseMovieRemoteDataSource {
     if (response.statusCode == 200) {
       return List<RecommendationModel>.from((response.data["results"] as List)
           .map((e) => RecommendationModel.formJson(e)));
+    } else {
+      final ErrorMessageModel errorMessageModel =
+          ErrorMessageModel.fromJson(response.data);
+      throw ServerException(errorMessageModel: errorMessageModel);
+    }
+  }
+
+  @override
+  Future<List<CastModel>> getCast(CastPrameters prameters) async {
+    final response =
+        await Dio().get(ApiConstants.cast(prameters.movieId.toString()));
+    if (response.statusCode == 200) {
+      return List<CastModel>.from((response.data['cast'] as List)
+          .map((e) => CastModel.formJson(e))
+          .toList());
+    } else {
+      final ErrorMessageModel errorMessageModel =
+          ErrorMessageModel.fromJson(response.data);
+      throw ServerException(errorMessageModel: errorMessageModel);
+    }
+  }
+
+  @override
+  Future<List<MoviesModel>> getDiscaverMovie(
+      DiscaverPrameters prameters) async {
+    final response =
+        await Dio().get(ApiConstants.discover(prameters.movieId.toString()));
+    if (response.statusCode == 200) {
+      return List<MoviesModel>.from((response.data['results'] as List)
+          .map((e) => MoviesModel.fromJson(e))).toList();
+    } else {
+      final ErrorMessageModel errorMessageModel =
+          ErrorMessageModel.fromJson(response.data);
+      throw ServerException(errorMessageModel: errorMessageModel);
+    }
+  }
+
+  @override
+  Future<List<GenresHomePageModel>> getGenresHomePage() async {
+    final response = await Dio().get(ApiConstants.genner);
+    if (response.statusCode == 200) {
+      return List<GenresHomePageModel>.from((response.data['genres'] as List)
+          .map((e) => GenresHomePageModel.fromJson(e))).toList();
     } else {
       final ErrorMessageModel errorMessageModel =
           ErrorMessageModel.fromJson(response.data);

@@ -26,3 +26,21 @@ class MovieDetailsParameters extends Equatable {
   @override
   List<Object?> get props => [];
 }
+
+class DiscaverPrameters extends Equatable {
+  final int movieId;
+
+  const DiscaverPrameters({required this.movieId});
+
+  @override
+  List<Object?> get props => [];
+}
+
+class CastPrameters extends Equatable {
+  final int movieId;
+
+  const CastPrameters({required this.movieId});
+
+  @override
+  List<Object?> get props => [];
+}
