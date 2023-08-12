@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 
-class GenreHomePage extends Equatable {
+class GenresHomePage extends Equatable {
   final String name;
   final int id;
 
-  const GenreHomePage({required this.name, required this.id});
+  const GenresHomePage({required this.name, required this.id});
 
   @override
   List<Object?> get props => [name, id];
